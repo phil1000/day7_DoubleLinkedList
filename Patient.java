@@ -37,9 +37,9 @@ public class Patient {
 			// link this patient to the one after the next
 			// the next object is not specifically deleted, just removed from the list
 			// ultimately the garbage collector will remove it
-			this.nextPatient = nextPatient.nextPatient;
-			tempPatient=nextPatient.nextPatient;
-			tempPatient.priorPatient=this;
+			tempPatient=this.nextPatient;
+			this.nextPatient = this.nextPatient.nextPatient;
+			tempPatient.nextPatient.priorPatient=tempPatient.priorPatient;
 			return true;
 		} else {
 			return this.nextPatient.deletePatient(patient); // recursive program 
@@ -49,10 +49,22 @@ public class Patient {
 	public boolean printPatientlist() {
 		if (this.nextPatient == null) {
 			// came to end of list so can finish printing
+			this.printPatient(); // print this instance of the patient
 			return false;
 		} else {
 			this.printPatient();
 			return this.nextPatient.printPatientlist(); // recursive program 
+		}
+	}
+	
+	public boolean reversePrintPatientlist() {
+		if (this.priorPatient == null) {
+			// came to start of list so can finish printing
+			this.printPatient(); // print this instance of the patient
+			return false;
+		} else {
+			this.printPatient();
+			return this.priorPatient.reversePrintPatientlist(); // recursive program 
 		}
 	}
 	
@@ -62,6 +74,9 @@ public class Patient {
 		while (listNavigator.nextPatient != null) {
 			listNavigator=listNavigator.nextPatient;
 			listSize++;
+		}
+		if (listSize>0) {
+			listSize++; //need to add this instance of the patient to the list
 		}
 		return listSize;
 	}
